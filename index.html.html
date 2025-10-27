@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دورلي - حلقة الوصل بينك وبين ما تحتاجه</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a5fb4;
+            --primary-dark: #0f4a8d;
+            --secondary: #239b56;
+            --accent: #e74c3c;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --gray: #7f8c8d;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+        
+        /* أنيميشن التحميل */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        
+        #loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loader-logo {
+            width: 120px;
+            height: 120px;
+            border: 5px solid var(--light);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            position: relative;
+        }
+        
+        .loader-logo:after {
+            content: "دورلي";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* شريط التنقل */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+        
+        .navbar.scrolled {
+            padding: 0.7rem 0;
+            background: rgba(255, 255, 255, 0.98);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .logo-icon:before {
+            content: '';
+            position: absolute;
+            width: 70%;
+            height: 70%;
+            border: 2px solid white;
+            border-radius: 50%;
+        }
+        
+        .logo-icon:after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            bottom: 5px;
+            right: 5px;
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo-text .primary {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+        }
+        
+        .logo-text .secondary {
+            font-size: 0.7rem;
+            color: var(--gray);
+            line-height: 1;
+            margin-top: 2px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin: 0 1rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: var(--transition);
+        }
+        
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+        
+        .nav-cta {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .nav-cta:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(26, 95, 180, 0.3);
+        }
+        
+        /* قسم البطل */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+        
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 95, 180, 0.9) 0%, rgba(35, 155, 86, 0.8) 100%);
+            z-index: -2;
+        }
+        
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        
+        .hero-text {
+            flex: 1;
+            color: white;
+            animation: fadeInUp 1s ease;
+        }
+        
+        .hero-text h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+        
+        .hero-text p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .hero-animation {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .floating-card {
+            width: 300px;
+            height: 200px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .floating-card:before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fad0c4, #a1c4fd);
+            border-radius: 20px;
+            z-index: -1;
+            opacity: 0.7;
+            filter: blur(15px);
+        }
+        
+        .floating-card i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .floating-card p {
+            color: var(--dark);
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* قسم كيفية العمل */
+        .how-it-works {
+            padding: 6rem 0;
+            background: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto 4rem;
+            font-size: 1.2rem;
+        }
+        
+        .steps-container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .step {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            padding: 2rem 1rem;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: var(--transition);
+        }
+        
+        .step.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .step-icon {
+            width: 100px;
+            height: 100px;
+            background: var(--light);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .step-icon i {
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+        
+        .step-number {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .step h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .step p {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+        
+        /* قسم المميزات */
+        .features {
+            padding: 6rem 0;
+            background: var(--light);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .feature-card.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .feature-icon i {
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .feature-card p {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+        
+        /* قسم الطلب */
+        .request-section {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .request-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .request-form {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-top: 3rem;
+            text-align: right;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: right;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 95, 180, 0.2);
+        }
+        
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: block;
+            width: 100%;
+        }
+        
+        .submit-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(26, 95, 180, 0.3);
+        }
+        
+        .channels {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .channel-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+        
+        .whatsapp-btn {
+            background: #25D366;
+            color: white;
+        }
+        
+        .facebook-btn {
+            background: #1877F2;
+            color: white;
+        }
+        
+        .phone-btn {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .channel-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        /* التذييل */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.7rem;
+        }
+        
+        .footer-section h3:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 50px;
+            height: 2px;
+            background: var(--primary);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.7rem;
+        }
+        
+        .footer-links a {
+            color: #ddd;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+            padding-right: 5px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .social-link:hover {
+            background: var(--primary);
+            transform: translateY(-5px);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* تأثيرات التمرير */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* تصميم متجاوب */
+        @media (max-width: 992px) {
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hero-text {
+                margin-bottom: 3rem;
+            }
+            
+            .hero-text h1 {
+                font-size: 2.8rem;
+            }
+            
+            .steps-container {
+                flex-direction: column;
+            }
+            
+            .step {
+                margin-bottom: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-text h1 {
+                font-size: 2.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .request-form {
+                padding: 2rem 1.5rem;
+            }
+            
+            .logo-text .primary {
+                font-size: 1.5rem;
+            }
+            
+            .logo-text .secondary {
+                font-size: 0.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- أنيميشن التحميل -->
+    <div id="loader">
+        <div class="loader-logo"></div>
+    </div>
+
+    <!-- شريط التنقل -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#home" class="logo">
+                <div class="logo-container">
+                    <div class="logo-icon"></div>
+                    <div class="logo-text">
+                        <span class="primary">دورلي</span>
+                        <span class="secondary">Dawerli - The link between you and what you need</span>
+                    </div>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#home">الرئيسية</a></li>
+                <li><a href="#how-it-works">كيفية العمل</a></li>
+                <li><a href="#features">المميزات</a></li>
+                <li><a href="#request">اطلب الآن</a></li>
+                <li><a href="#contact">اتصل بنا</a></li>
+            </ul>
+            <button class="nav-cta" id="register-agent">سجل كوسيط</button>
+        </div>
+    </nav>
+
+    <!-- قسم البطل -->
+    <section class="hero" id="home">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>دورلي - حلقة الوصل بينك وبين ما تحتاجه</h1>
+                <p>المنصة الأولى في ليبيا لربطك بالمنتجات غير المتوفرة في مدينتك. نوصل لك طلباتك من المدن الكبرى بثقة وأمان.</p>
+                <button class="nav-cta" id="hero-order">اطلب منتجك الآن</button>
+            </div>
+            <div class="hero-animation">
+                <div class="floating-card">
+                    <i class="fas fa-shipping-fast"></i>
+                    <p>نوصل طلباتك بسرعة وأمان</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم كيفية العمل -->
+    <section class="how-it-works" id="how-it-works">
+        <h2 class="section-title">كيف تعمل منصة دورلي؟</h2>
+        <p class="section-subtitle">4 خطوات بسيطة تفصلك عن الحصول على ما تريد</p>
+        
+        <div class="steps-container">
+            <div class="step fade-in">
+                <div class="step-icon">
+                    <i class="fas fa-edit"></i>
+                    <div class="step-number">1</div>
+                </div>
+                <h3>أرسل طلبك</h3>
+                <p>أدخل وصف المنتج الذي تبحث عنه ومدينتك عبر أي من قنواتنا المتاحة</p>
+            </div>
+            
+            <div class="step fade-in">
+                <div class="step-icon">
+                    <i class="fas fa-users"></i>
+                    <div class="step-number">2</div>
+                </div>
+                <h3>استقبل العروض</h3>
+                <p>سيقوم الوسطاء في المدن الكبرى بإرسال عروض أسعار لك خلال ساعات</p>
+            </div>
+            
+            <div class="step fade-in">
+                <div class="step-icon">
+                    <i class="fas fa-hand-pointer"></i>
+                    <div class="step-number">3</div>
+                </div>
+                <h3>اختر أفضل عرض</h3>
+                <p>اختر العرض الذي يناسبك بناءً على السعر، التقييمات وتجربة الوسيط</p>
+            </div>
+            
+            <div class="step fade-in">
+                <div class="step-icon">
+                    <i class="fas fa-box-open"></i>
+                    <div class="step-number">4</div>
+                </div>
+                <h3>استلم منتجك</h3>
+                <p>ادفع بعد استلام المنتج للتأكد من جودته. عملية آمنة ومضمونة</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم المميزات -->
+    <section class="features" id="features">
+        <h2 class="section-title">لماذا تختار دورلي؟</h2>
+        <p class="section-subtitle">مميزاتنا تجعل تجربتك فريدة وآمنة</p>
+        
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>نظام دفع آمن</h3>
+                <p>ادفع بعد استلام المنتج مباشرة. أموالك محمية حتى تتأكد من جودة الطلب</p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3>تقييمات موثوقة</h3>
+                <p>اطلع على تقييمات المستخدمين السابقين للوسطاء واختر الأفضل</p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3>سرعة في التنفيذ</h3>
+                <p>احصل على عروض متعددة في وقت قياسي. نوصل طلباتك بأسرع وقت ممكن</p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3>تغطية واسعة</h3>
+                <p>خدمتنا تشمل معظم المدن الليبية. طلباتك تصل من طرابلس، بنغازي والمدن الكبرى</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم الطلب -->
+    <section class="request-section" id="request">
+        <div class="request-container">
+            <h2 class="section-title">اطلب منتجك الآن</h2>
+            <p class="section-subtitle">أرسل طلبك وسنعثر عليه لك في أي مدينة ليبية</p>
+            
+            <div class="request-form fade-in">
+                <div class="form-group">
+                    <label for="product">وصف المنتج المطلوب</label>
+                    <textarea id="product" class="form-control" rows="4" placeholder="أدخل وصف المنتج الذي تبحث عنه..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="city">المدينة</label>
+                    <input type="text" id="city" class="form-control" placeholder="أدخل مدينتك..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="image">صورة المنتج (اختياري)</label>
+                    <input type="file" id="image" class="form-control" accept="image/*">
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submit-request">أرسل الطلب</button>
+            </div>
+            
+            <div class="channels">
+                <a href="#" class="channel-btn whatsapp-btn" id="whatsapp-order">
+                    <i class="fab fa-whatsapp"></i> واتساب
+                </a>
+                <a href="https://www.facebook.com/share/16JEUw1tZk/" class="channel-btn facebook-btn" target="_blank">
+                    <i class="fab fa-facebook"></i> فيسبوك
+                </a>
+                <a href="#" class="channel-btn phone-btn">
+                    <i class="fas fa-phone"></i> اتصال هاتفي
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- التذييل -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="logo-container">
+                    <div class="logo-icon"></div>
+                    <div class="logo-text">
+                        <span class="primary">دورلي</span>
+                        <span class="secondary">Dawerli - The link between you and what you need</span>
+                    </div>
+                </div>
+                <p>حلقة الوصل بينك وبين ما تحتاجه. المنصة الأولى في ليبيا لربط المستخدمين بالمنتجات غير المتوفرة في مدنهم.</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/share/16JEUw1tZk/" class="social-link" target="_blank">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/mohammed-albarshi-80a57015b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-link" target="_blank">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="mailto:Albarshi.96@gmail.com" class="social-link">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>روابط سريعة</h3>
+                <ul class="footer-links">
+                    <li><a href="#home">الرئيسية</a></li>
+                    <li><a href="#how-it-works">كيفية العمل</a></li>
+                    <li><a href="#features">المميزات</a></li>
+                    <li><a href="#request">اطلب الآن</a></li>
+                    <li><a href="#" id="footer-register">كن وسيطاً</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>اتصل بنا</h3>
+                <ul class="footer-links">
+                    <li><i class="fas fa-phone"></i> 0918014512</li>
+                    <li><i class="fab fa-whatsapp"></i> واتساب: 0918014512</li>
+                    <li><i class="fas fa-envelope"></i> Albarshi.96@gmail.com</li>
+                    <li><i class="fas fa-map-marker-alt"></i> ليبيا - جميع المدن</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>جميع الحقوق محفوظة &copy; دورلي 2023</p>
+        </div>
+    </footer>
+
+    <script>
+        // أنيميشن التحميل
+        window.addEventListener('load', function() {
+            const loader = document.getElementById('loader');
+            setTimeout(function() {
+                loader.classList.add('hidden');
+            }, 1500);
+        });
+
+        // تأثير التمرير لشريط التنقل
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // تأثير الظهور عند التمرير
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('visible');
+                appearOnScroll.unobserve(entry.target);
+            });
+        }, { threshold: 0.1 });
+        
+        fadeElements.forEach(element => {
+            appearOnScroll.observe(element);
+        });
+
+        // وظيفة إرسال رسالة واتساب
+        function sendWhatsAppMessage(message) {
+            const phoneNumber = "218918014512";
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // زر سجل كوسيط
+        document.getElementById('register-agent').addEventListener('click', function() {
+            const message = "مرحباً، أود التسجيل كوسيط في منصة دورلي\n\nالاسم:\nالمدينة:\nالتخصص (المنتجات التي يمكنني توفيرها):";
+            sendWhatsAppMessage(message);
+        });
+
+        // زر سجل كوسيط في الفوتر
+        document.getElementById('footer-register').addEventListener('click', function(e) {
+            e.preventDefault();
+            const message = "مرحباً، أود التسجيل كوسيط في منصة دورلي\n\nالاسم:\nالمدينة:\nالتخصص (المنتجات التي يمكنني توفيرها):";
+            sendWhatsAppMessage(message);
+        });
+
+        // زر طلب منتج في القسم البطل
+        document.getElementById('hero-order').addEventListener('click', function() {
+            const message = "مرحباً، أود طلب منتج عبر منصة دورلي\n\nوصف المنتج:\nالمدينة:";
+            sendWhatsAppMessage(message);
+        });
+
+        // زر طلب عبر واتساب
+        document.getElementById('whatsapp-order').addEventListener('click', function(e) {
+            e.preventDefault();
+            const message = "مرحباً، أود طلب منتج عبر منصة دورلي\n\nوصف المنتج:\nالمدينة:";
+            sendWhatsAppMessage(message);
+        });
+
+        // نموذج الطلب
+        document.querySelector('.request-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const product = document.getElementById('product').value;
+            const city = document.getElementById('city').value;
+            
+            // إرسال رسالة واتساب مع بيانات الطلب
+            const message = `طلب جديد من منصة دورلي:\n\nالمنتج: ${product}\nالمدينة: ${city}\n\nأرجو التواصل معي لتأكيد الطلب.`;
+            sendWhatsAppMessage(message);
+            
+            // إعادة تعيين النموذج
+            this.reset();
+        });
+
+        // تكامل الاتصال الهاتفي
+        document.querySelector('.phone-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = "tel:+218918014512";
+        });
+    </script>
+</body>
+</html>
